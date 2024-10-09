@@ -573,10 +573,6 @@ go.opentelemetry.io/otel/exporters/otlp/internal/transform
 go.opentelemetry.io/otel/exporters/otlp/otlpgrpc
 # go.opentelemetry.io/otel/metric v0.20.0
 ## explicit; go 1.14
-go.opentelemetry.io/otel/metric
-go.opentelemetry.io/otel/metric/global
-go.opentelemetry.io/otel/metric/number
-go.opentelemetry.io/otel/metric/registry
 # go.opentelemetry.io/otel/sdk v1.3.0 => go.opentelemetry.io/otel/sdk v0.20.0
 ## explicit; go 1.14
 go.opentelemetry.io/otel/sdk/instrumentation
@@ -589,17 +585,6 @@ go.opentelemetry.io/otel/sdk/export/metric
 go.opentelemetry.io/otel/sdk/export/metric/aggregation
 # go.opentelemetry.io/otel/sdk/metric v0.20.0
 ## explicit; go 1.14
-go.opentelemetry.io/otel/sdk/metric
-go.opentelemetry.io/otel/sdk/metric/aggregator
-go.opentelemetry.io/otel/sdk/metric/aggregator/exact
-go.opentelemetry.io/otel/sdk/metric/aggregator/histogram
-go.opentelemetry.io/otel/sdk/metric/aggregator/lastvalue
-go.opentelemetry.io/otel/sdk/metric/aggregator/minmaxsumcount
-go.opentelemetry.io/otel/sdk/metric/aggregator/sum
-go.opentelemetry.io/otel/sdk/metric/controller/basic
-go.opentelemetry.io/otel/sdk/metric/controller/time
-go.opentelemetry.io/otel/sdk/metric/processor/basic
-go.opentelemetry.io/otel/sdk/metric/selector/simple
 # go.opentelemetry.io/otel/trace v1.6.3 => go.opentelemetry.io/otel/trace v0.20.0
 ## explicit; go 1.14
 go.opentelemetry.io/otel/trace
