@@ -567,14 +567,8 @@ github.com/rancher/wrangler/pkg/condition
 github.com/rancher/wrangler/pkg/controller-gen
 github.com/rancher/wrangler/pkg/controller-gen/args
 github.com/rancher/wrangler/pkg/controller-gen/generators
-github.com/rancher/wrangler/pkg/crd
 github.com/rancher/wrangler/pkg/data
 github.com/rancher/wrangler/pkg/data/convert
-github.com/rancher/wrangler/pkg/generated/controllers/apiextensions.k8s.io/v1
-github.com/rancher/wrangler/pkg/generated/controllers/apps
-github.com/rancher/wrangler/pkg/generated/controllers/apps/v1
-github.com/rancher/wrangler/pkg/generated/controllers/batch
-github.com/rancher/wrangler/pkg/generated/controllers/batch/v1
 github.com/rancher/wrangler/pkg/generated/controllers/core
 github.com/rancher/wrangler/pkg/generated/controllers/core/v1
 github.com/rancher/wrangler/pkg/generic
@@ -582,20 +576,14 @@ github.com/rancher/wrangler/pkg/genericcondition
 github.com/rancher/wrangler/pkg/gvk
 github.com/rancher/wrangler/pkg/kubeconfig
 github.com/rancher/wrangler/pkg/kv
-github.com/rancher/wrangler/pkg/leader
 github.com/rancher/wrangler/pkg/merr
 github.com/rancher/wrangler/pkg/name
 github.com/rancher/wrangler/pkg/objectset
 github.com/rancher/wrangler/pkg/patch
-github.com/rancher/wrangler/pkg/schemas
-github.com/rancher/wrangler/pkg/schemas/definition
-github.com/rancher/wrangler/pkg/schemas/openapi
 github.com/rancher/wrangler/pkg/schemes
 github.com/rancher/wrangler/pkg/signals
-github.com/rancher/wrangler/pkg/slice
 github.com/rancher/wrangler/pkg/start
 github.com/rancher/wrangler/pkg/stringset
-github.com/rancher/wrangler/pkg/yaml
 # github.com/rancher/wrangler/v3 v3.0.0
 ## explicit; go 1.22.0
 github.com/rancher/wrangler/v3/pkg/apply
@@ -626,6 +614,7 @@ github.com/rancher/wrangler/v3/pkg/generic
 github.com/rancher/wrangler/v3/pkg/genericcondition
 github.com/rancher/wrangler/v3/pkg/gvk
 github.com/rancher/wrangler/v3/pkg/kv
+github.com/rancher/wrangler/v3/pkg/leader
 github.com/rancher/wrangler/v3/pkg/merr
 github.com/rancher/wrangler/v3/pkg/name
 github.com/rancher/wrangler/v3/pkg/objectset
@@ -637,6 +626,7 @@ github.com/rancher/wrangler/v3/pkg/schemas/mappers
 github.com/rancher/wrangler/v3/pkg/schemas/openapi
 github.com/rancher/wrangler/v3/pkg/schemas/validation
 github.com/rancher/wrangler/v3/pkg/schemes
+github.com/rancher/wrangler/v3/pkg/signals
 github.com/rancher/wrangler/v3/pkg/slice
 github.com/rancher/wrangler/v3/pkg/start
 github.com/rancher/wrangler/v3/pkg/stringset
