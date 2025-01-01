@@ -75,7 +75,6 @@ require (
 	github.com/k8snetworkplumbingwg/network-attachment-definition-client v1.3.0
 	github.com/rancher/lasso v0.0.0-20240705194423-b2a060d103c1
 	github.com/rancher/wrangler v1.1.2
-	github.com/rancher/wrangler/v3 v3.0.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/tidwall/sjson v1.2.5
 	github.com/urfave/cli v1.22.16
@@ -184,6 +183,7 @@ require (
 	github.com/rancher/rke v1.6.2 // indirect
 	github.com/rancher/steve v0.0.0-20240911190153-79304d93b49b // indirect
 	github.com/rancher/system-upgrade-controller/pkg/apis v0.0.0-20240301001845-4eacc2dabbde // indirect
+	github.com/rancher/wrangler/v3 v3.0.0 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
 	github.com/robfig/cron v1.2.0 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
