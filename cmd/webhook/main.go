@@ -117,8 +117,8 @@ func run(ctx context.Context, cfg *rest.Config, options *config.Options) error {
 
 	if err := webhookServer.RegisterValidators(
 		clusternetwork.NewCnValidator(c.vcCache),
-		nad.NewNadValidator(c.vmiCache),
-		vlanconfig.NewVlanConfigValidator(c.nadCache, c.vcCache, c.vsCache, c.vmiCache),
+		nad.NewNadValidator(c.vmCache),
+		vlanconfig.NewVlanConfigValidator(c.nadCache, c.vcCache, c.vsCache, c.vmCache),
 	); err != nil {
 		return fmt.Errorf("failed to register validators: %v", err)
 	}
@@ -133,12 +133,12 @@ func run(ctx context.Context, cfg *rest.Config, options *config.Options) error {
 }
 
 const (
-	VMIByNetworkIndex = "vm.harvesterhci.io/vmi-by-network"
+	VMByNetworkIndex = "vm.harvesterhci.io/vm-by-network"
 )
 
 type caches struct {
 	nadCache  ctlcniv1.NetworkAttachmentDefinitionCache
-	vmiCache  ctlkubevirtv1.VirtualMachineInstanceCache
+	vmCache   ctlkubevirtv1.VirtualMachineCache
 	vcCache   ctlnetworkv1.VlanConfigCache
 	vsCache   ctlnetworkv1.VlanStatusCache
 	cnCache   ctlnetworkv1.ClusterNetworkCache
@@ -158,7 +158,7 @@ func newCaches(ctx context.Context, cfg *rest.Config, threadiness int) (*caches,
 	starters = append(starters, coreFactory)
 	// must declare cache before starting informers
 	c := &caches{
-		vmiCache:  kubevirtFactory.Kubevirt().V1().VirtualMachineInstance().Cache(),
+		vmCache:   kubevirtFactory.Kubevirt().V1().VirtualMachine().Cache(),
 		nadCache:  cniFactory.K8s().V1().NetworkAttachmentDefinition().Cache(),
 		vcCache:   harvesterNetworkFactory.Network().V1beta1().VlanConfig().Cache(),
 		vsCache:   harvesterNetworkFactory.Network().V1beta1().VlanStatus().Cache(),
@@ -166,7 +166,7 @@ func newCaches(ctx context.Context, cfg *rest.Config, threadiness int) (*caches,
 		nodeCache: coreFactory.Core().V1().Node().Cache(),
 	}
 	// Indexer must be added before starting the informer, otherwise panic `cannot add indexers to running index` happens
-	c.vmiCache.AddIndexer(VMIByNetworkIndex, vmiByNetwork)
+	c.vmCache.AddIndexer(VMByNetworkIndex, vmByNetwork)
 
 	if err := start.All(ctx, threadiness, starters...); err != nil {
 		return nil, err
@@ -184,8 +184,8 @@ func setLogLevel(level string) {
 	logrus.SetLevel(ll)
 }
 
-func vmiByNetwork(obj *kubevirtv1.VirtualMachineInstance) ([]string, error) {
-	networks := obj.Spec.Networks
+func vmByNetwork(obj *kubevirtv1.VirtualMachine) ([]string, error) {
+	networks := obj.Spec.Template.Spec.Networks
 	networkNameList := make([]string, 0, len(networks))
 	for _, network := range networks {
 		if network.NetworkSource.Multus == nil {
