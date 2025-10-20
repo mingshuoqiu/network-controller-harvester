@@ -2,6 +2,7 @@ package iface
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/coreos/go-iptables/iptables"
@@ -21,7 +22,8 @@ const (
 	tableFilter  = "filter"
 	chainForward = "FORWARD"
 
-	defaultPVID = uint16(1)
+	defaultPVID = uint16(utils.DefaultVlanID)
+	minVlanID   = uint16(utils.MinVlanID)
 )
 
 type Link struct {
@@ -38,7 +40,7 @@ func NewLink(l netlink.Link) *Link {
 // Equivalent to: `bridge vlan add dev DEV vid VID master`
 func (l *Link) AddBridgeVlan(vid uint16) error {
 	// The command to configure PVID is not `bridge vlan add dev DEV vid VID master`
-	if vid == defaultPVID {
+	if vid == defaultPVID || vid == minVlanID {
 		return nil
 	}
 
@@ -52,7 +54,7 @@ func (l *Link) AddBridgeVlan(vid uint16) error {
 // DelBridgeVlan adds a new vlan filter entry
 // Equivalent to: `bridge vlan del dev DEV vid VID master`
 func (l *Link) DelBridgeVlan(vid uint16) error {
-	if vid == defaultPVID {
+	if vid == defaultPVID || vid == minVlanID {
 		return nil
 	}
 
@@ -69,7 +71,7 @@ func (l *Link) ListBridgeVlan() ([]uint16, error) {
 		return nil, err
 	}
 
-	vlanInfo, ok := m[int32(l.Attrs().Index)]
+	vlanInfo, ok := m[int32(l.Attrs().Index)] //nolint:gosec
 	if !ok {
 		return nil, nil
 	}
@@ -80,6 +82,28 @@ func (l *Link) ListBridgeVlan() ([]uint16, error) {
 	}
 
 	return vids, nil
+}
+
+func (l *Link) ToVlanIDSet() (*utils.VlanIDSet, error) {
+	m, err := netlink.BridgeVlanList()
+	if err != nil {
+		return nil, err
+	}
+
+	vlanInfo, ok := m[int32(l.Attrs().Index)] //nolint:gosec
+	if !ok {
+		return nil, nil
+	}
+
+	vis := utils.NewVlanIDSet()
+
+	for i := range vlanInfo {
+		if err := vis.SetUint16VID(vlanInfo[i].Vid); err != nil {
+			return nil, fmt.Errorf("failed to set link %v vid %v to vlanset, error %w", l.Attrs().Name, vlanInfo[i].Vid, err)
+		}
+	}
+
+	return vis, nil
 }
 
 // clearMacvlan to delete all the macvlan interfaces whose parent index equals l.Index()
@@ -206,4 +230,41 @@ func (l *Link) Remove() error {
 	}
 
 	return netlink.LinkDel(l)
+}
+
+// for the convenience of unit test
+func getManuallyConfiguredVlans(cnName string, links []netlink.Link) []uint16 {
+	prefix := utils.GetClusterNetworkDevicePrefix(cnName)
+	vids := []uint16{}
+	for _, link := range links {
+		if !utils.HasClusterNetworkDevicePrefix(link.Attrs().Name, prefix) {
+			continue
+		}
+		result := strings.Split(link.Attrs().Name, ".")
+		if len(result) != 2 {
+			// not the expected format
+			continue
+		}
+		vid, err := strconv.Atoi(result[1])
+		if err != nil {
+			// not a vlan sub interface
+			continue
+		}
+		// work on [2..4094]
+		if vid > utils.DefaultVlanID && vid <= utils.MaxVlanID {
+			vids = append(vids, uint16(vid))
+		}
+	}
+	return vids
+}
+
+// user might configure sub vlan interface on a bridge directly, should always keep them
+func GetManuallyConfiguredVlans(cnName string) ([]uint16, error) {
+	// similar to `ip link`
+	links, err := netlink.LinkList()
+	if err != nil {
+		return nil, err
+	}
+
+	return getManuallyConfiguredVlans(cnName, links), nil
 }
